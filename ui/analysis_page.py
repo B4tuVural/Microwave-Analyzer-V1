@@ -20,6 +20,7 @@ from ui.format import fmt_complex, fmt_float
 _PLOTLY_CONFIG = {
     "scrollZoom": True,
     "displaylogo": False,
+    "displayModeBar": "hover",
     "modeBarButtonsToRemove": ["select2d", "lasso2d"],
 }
 

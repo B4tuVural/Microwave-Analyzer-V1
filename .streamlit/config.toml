@@ -1,0 +1,8 @@
+# Kalıcı karanlık tema — figür paletiyle (viz/theme.py) uyumlu.
+[theme]
+base = "dark"
+primaryColor = "#5B8DEF"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#161B26"
+textColor = "#E6EAF1"
+font = "serif"

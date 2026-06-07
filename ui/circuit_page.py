@@ -25,6 +25,7 @@ from unit_format import (LENGTH_UNITS, OHM_UNITS, fmt_length, fmt_ohm,
                          stub_reactance_ohm)
 
 _PLOTLY_CONFIG = {"scrollZoom": True, "displaylogo": False,
+                  "displayModeBar": "hover",
                   "modeBarButtonsToRemove": ["select2d", "lasso2d"]}
 
 

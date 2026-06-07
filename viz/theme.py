@@ -103,7 +103,7 @@ def base_2d_layout(title: str, limit: float = 1.18) -> dict:
                    showticklabels=False, visible=False,
                    scaleanchor="x", scaleratio=1),
         margin=dict(l=10, r=10, t=52, b=90),
-        height=720,
+        height=600,          # 720→600: mobilde daha az scroll, hâlâ büyük
         showlegend=True,
         legend=_legend(orientation="h", yanchor="top", y=-0.10,
                        xanchor="center", x=0.5),
@@ -136,16 +136,27 @@ def base_3d_layout(title: str) -> dict:
 
 def base_circuit_layout(title: str, subtitle: str,
                         width: float, height: float) -> dict:
-    """Devre şeması layout'u. Etiketler add_annotation ile eklendiğinden burada
-    `annotations` KOYULMAZ (yoksa update_layout onları ezer)."""
+    """Devre şeması layout'u.
+
+    ÖNEMLİ: scaleanchor KULLANILMAZ. Smith diyagramında gerekli olan
+    kilitli en/boy oranı, devre şemasında mobilde kırıma neden olur:
+    telefon genişliği (~350px) ile 1000/420 oranı → yükseklik 147px'e
+    düşer; her şey üst üste biner. Bunun yerine sabit height kullanılır.
+    Yatay sıkışma olsa da Plotly scrollZoom ile zoom yapılabilir.
+
+    Etiketler add_annotation ile eklendiğinden burada `annotations`
+    KOYULMAZ (yoksa update_layout onları ezer).
+    """
     return dict(
         paper_bgcolor=PALETTE.paper,
         plot_bgcolor=PALETTE.surface,
         xaxis=dict(range=[0, width], showgrid=False, zeroline=False,
-                   showticklabels=False, visible=False, constrain="domain"),
+                   showticklabels=False, visible=False),
         yaxis=dict(range=[0, height], showgrid=False, zeroline=False,
-                   showticklabels=False, visible=False,
-                   scaleanchor="x", scaleratio=1),
+                   showticklabels=False, visible=False),
+        # Sabit yükseklik: mobilde ~350px genişlikte 420px yükseklik sağlar
+        # (scaleanchor ile 147px olurdu — 3× iyileşme)
+        height=420,
         margin=dict(l=8, r=8, t=8, b=8),
         showlegend=False,
         hovermode=False,

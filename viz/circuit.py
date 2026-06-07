@@ -107,10 +107,10 @@ class _CircuitCanvas:
                    size=11, bold=True, anchor="left")
 
     def finalize(self, title, subtitle):
-        # Başlık/altbaşlık annotation olarak eklenir (layout ile ezilmesin diye).
-        self.label(W / 2, H - 18, title, size=16, bold=True)
+        # Başlık küçük font: 40+ karakterlik metodlar mobil genişlikte sığsın
+        self.label(W / 2, H - 18, title, size=11, bold=True)
         if subtitle:
-            self.label(W / 2, H - 42, subtitle, color=PALETTE.muted, size=11)
+            self.label(W / 2, H - 36, subtitle, color=PALETTE.muted, size=9)
         self.fig.update_layout(**base_circuit_layout(title, subtitle, W, H))
         return self.fig
 
@@ -120,7 +120,8 @@ class _CircuitCanvas:
 # ----------------------------------------------------------------------
 def _zl_text(output: AnalyzerOutput) -> str:
     z = output.basic.z_load
-    return f"Z<sub>L</sub> = {z.real:.2f} {z.imag:+.2f}j Ω"
+    # Kısa format: .0f (tam sayı) — mobil sığması için
+    return f"Z_L = {z.real:.0f}{z.imag:+.0f}j Ω"
 
 
 def _common_frame(c: _CircuitCanvas, output: AnalyzerOutput, x_left, x_load,
@@ -133,7 +134,7 @@ def _common_frame(c: _CircuitCanvas, output: AnalyzerOutput, x_left, x_load,
     c.label((x_left + x_load) / 2, y_bot - 22,
             f"Z₀ = {output.basic.z0:.2f} Ω", size=12, bold=True)
     c.resistor_v(x_load, y_top, y_bot)
-    c.label(x_load + 24, y_mid, _zl_text(output), size=12, bold=True, anchor="left")
+    c.label(x_load, y_top + 28, _zl_text(output), size=9, bold=True, anchor="center")
 
 
 # ----------------------------------------------------------------------
@@ -144,8 +145,7 @@ def _draw_basic_line(output: AnalyzerOutput, length_unit="λ", ohm_unit="Ω") ->
     y_top, y_bot = 250, 150
     x_left, x_load = 120, 760
     _common_frame(c, output, x_left, x_load, y_top, y_bot)
-    return c.finalize("Temel İletim Hattı",
-                      "Yük empedansı ve karakteristik empedans gösterimi")
+    return c.finalize("Temel İletim Hattı", "Yük empedansı gösterimi")
 
 
 def _draw_shunt_stub(output: AnalyzerOutput, sol: MatchingSolution,
@@ -180,8 +180,7 @@ def _draw_shunt_stub(output: AnalyzerOutput, sol: MatchingSolution,
         c.dim_v(sx2 + 34, y_bot, stub_end,
                 f"ℓ = {fmt_length(sol.stub_length_lambda, wl, length_unit)}")
 
-    return c.finalize(f"{sol.method} Uygunlama Devresi",
-                      "Yükten d uzaklıkta ana hatta paralel bağlanan yan hat")
+    return c.finalize(sol.method, "Paralel bağlantılı yan hat")
 
 
 def _draw_series_stub(output: AnalyzerOutput, sol: MatchingSolution,
@@ -224,7 +223,7 @@ def _draw_series_stub(output: AnalyzerOutput, sol: MatchingSolution,
 
     # Yük
     c.resistor_v(x_load, y_top, y_bot)
-    c.label(x_load + 24, y_mid, _zl_text(output), size=12, bold=True, anchor="left")
+    c.label(x_load, y_top + 28, _zl_text(output), size=9, bold=True, anchor="center")
 
     # Ölçüler: d yük tarafında alt rayın altında, ℓ yan hat boyunca
     if sol.d_lambda is not None:
@@ -232,8 +231,7 @@ def _draw_series_stub(output: AnalyzerOutput, sol: MatchingSolution,
     if sol.stub_length_lambda is not None:
         c.dim_v(sx2 + 34, y_top, stub_top, f"ℓ = {fmt_length(sol.stub_length_lambda, wl, length_unit)}")
 
-    return c.finalize(f"{sol.method} Uygunlama Devresi",
-                      "Yükten d uzaklıkta ana hatta seri eklenen yan hat")
+    return c.finalize(sol.method, "Seri bağlantılı yan hat")
 
 
 def _draw_quarter_wave(output: AnalyzerOutput, sol: MatchingSolution,
@@ -260,9 +258,8 @@ def _draw_quarter_wave(output: AnalyzerOutput, sol: MatchingSolution,
     c.dim_h(x_a, x_b, y_top + 56, "λ / 4")
 
     c.resistor_v(x_load, y_top, y_bot)
-    c.label(x_load + 24, y_mid, _zl_text(output), size=12, bold=True, anchor="left")
-    return c.finalize("Çeyrek Dalga Transformatör Devresi",
-                      "Saf dirençli yükler için λ/4 hat ile empedans uygunlaması")
+    c.label(x_load, y_top + 28, _zl_text(output), size=9, bold=True, anchor="center")
+    return c.finalize("Çeyrek Dalga Transformatör", "λ/4 hat ile empedans uygunlaması")
 
 
 # ----------------------------------------------------------------------
