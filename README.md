@@ -2,20 +2,6 @@
 
 > **Microwave Smith Chart Analyzer** — An interactive, professional-grade impedance matching tool built with Python and Streamlit. Designed for microwave engineering students and engineers.
 
----
-
-## 🖼️ Ekran Görüntüleri / Screenshots
-
-| 2B Smith Diyagramı | 3B Smith Diyagramı |
-|:---:|:---:|
-| ![2D Smith](docs/screenshot_2d.png) | ![3D Smith](docs/screenshot_3d.png) |
-
-| Devre Şeması | Karşılaştırma Tablosu |
-|:---:|:---:|
-| ![Circuit](docs/screenshot_circuit.png) | ![Table](docs/screenshot_table.png) |
-
----
-
 ## ✨ Özellikler / Features
 
 ### 📐 İnteraktif Smith Diyagramları
@@ -67,7 +53,7 @@ Toplam fiziksel uzunluğa göre **en iyiden en kötüye** sıralanmış 8 adet �
 ## 🏗️ Mimari / Architecture
 
 ```
-smith_streamlit/
+Microwave-Analyzer-V1/
 ├── core/                   # Saf RF matematiği (dokunulmaz çekirdek)
 │   ├── models.py           # Veri modelleri (LoadData, MatchingSolution …)
 │   ├── rf_math.py          # Γ, VSWR, Z↔Y dönüşümleri
@@ -123,8 +109,8 @@ smith_streamlit/
 
 ```powershell
 # 1. Projeyi klonla
-git clone https://github.com/KULLANICI_ADI/smith-chart-analyzer.git
-cd smith-chart-analyzer
+git clone https://github.com/B4tuVural/Microwave-Analyzer-V1
+cd Microwave-Analyzer-V1
 
 # 2. Python 3.11 ile sanal ortam oluştur (Windows Python Launcher)
 py -3.11 -m venv rf_venv
@@ -147,8 +133,8 @@ streamlit run app.py
 
 ```bash
 # 1. Projeyi klonla
-git clone https://github.com/KULLANICI_ADI/smith-chart-analyzer.git
-cd smith-chart-analyzer
+git clone https://github.com/B4tuVural/Microwave-Analyzer-V1
+cd Microwave-Analyzer-V1
 
 # 2. Python 3.11 ile sanal ortam oluştur
 python3.11 -m venv rf_venv
@@ -162,7 +148,6 @@ pip install -r requirements.txt
 # 5. Uygulamayı başlat
 streamlit run app.py
 ```
-
 ---
 
 ### Sanal Ortamdan Çıkış
@@ -221,13 +206,6 @@ Hat uzunluğu   : l   = 0.25 λ
 | [NumPy](https://numpy.org) | RF hesaplamaları, vektör işlemleri |
 | Python 3.11 | Tüm çekirdek mantık |
 
----
-
-## 📜 Lisans / License
-
-Bu proje [MIT Lisansı](LICENSE) kapsamında dağıtılmaktadır.
-
----
 
 ## 🎓 Notlar / Notes
 
