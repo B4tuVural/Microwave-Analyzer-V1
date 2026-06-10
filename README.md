@@ -3,16 +3,9 @@
 > **Microwave Smith Chart Analyzer** — An interactive, professional-grade impedance matching tool built with Python and Streamlit. Designed for microwave engineering students and engineers.
 
 ---
-
-## 🖼️ Ekran Görüntüleri / Screenshots
-
-| 2B Smith Diyagramı | 3B Smith Diyagramı |
-|:---:|:---:|
-| ![2D Smith](docs/screenshot_2d.png) | ![3D Smith](docs/screenshot_3d.png) |
-
-| Devre Şeması | Karşılaştırma Tablosu |
-|:---:|:---:|
-| ![Circuit](docs/screenshot_circuit.png) | ![Table](docs/screenshot_table.png) |
+<a href="https://microwave-analyzer-v1-ybv.streamlit.app/">
+  <img src="https://streamlit.io/images/brand/streamlit-logo-primary-colormark-lighttext.png" width="150" alt="Open in Streamlit">
+</a>
 
 ---
 
