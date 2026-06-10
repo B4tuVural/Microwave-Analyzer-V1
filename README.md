@@ -52,7 +52,7 @@ Toplam fiziksel uzunluğa göre **en iyiden en kötüye** sıralanmış 8 adet �
 
 ### 🧩 Devre Çözücü (Kademeli Ağ)
 - Farklı **εr** ve **Z₀** değerlerinde iletim hatları, seri stub ve paralel stub ekleyerek kademeli devre kurma
-- Yapı doğrudan yükten başlar; aradaki **d / l mesafeleri** iletim hattı elemanlarıyla, stub'lar düğümlere bağlanarak verilir (final sorusundaki kaskat yapı gibi)
+- Yapı doğrudan yükten başlar; aradaki **d / l mesafeleri** iletim hattı elemanlarıyla, stub'lar düğümlere bağlanarak verilir.
 - İletim hatlarına uzunluk, stub'lara **ℓ** boyu + uç tipi (açık/kısa)
 - Uzunluklar **λ / m / cm / mm** cinsinden girilebilir
 - Oluşan devrenin özellikleri (Z_in, Γ, VSWR, geri dönüş kaybı) ve ayrıntılı eleman tablosu
@@ -130,8 +130,8 @@ smith_streamlit/
 
 ```powershell
 # 1. Projeyi klonla
-git clone https://github.com/KULLANICI_ADI/smith-chart-analyzer.git
-cd smith-chart-analyzer
+git clone https://github.com/B4tuVural/Microwave-Analyzer-V1
+cd Microwave-Analyzer-V1
 
 # 2. Python 3.11 ile sanal ortam oluştur (Windows Python Launcher)
 py -3.11 -m venv rf_venv
@@ -154,8 +154,8 @@ streamlit run app.py
 
 ```bash
 # 1. Projeyi klonla
-git clone https://github.com/KULLANICI_ADI/smith-chart-analyzer.git
-cd smith-chart-analyzer
+git clone https://github.com/B4tuVural/Microwave-Analyzer-V1
+cd Microwave-Analyzer-V1
 
 # 2. Python 3.11 ile sanal ortam oluştur
 python3.11 -m venv rf_venv
@@ -230,11 +230,6 @@ Hat uzunluğu   : l   = 0.25 λ
 
 ---
 
-## 📜 Lisans / License
-
-Bu proje [MIT Lisansı](LICENSE) kapsamında dağıtılmaktadır.
-
----
 
 ## 🎓 Notlar / Notes
 
