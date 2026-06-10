@@ -9,9 +9,9 @@ Mimari (Separation of Concerns + SOLID)
 * services/  : SmithAnalyzer facade'ı (tek çağrıyla tüm analiz).
 * viz/       : saf Plotly figür üreticileri (Streamlit'ten bağımsız, test edilebilir).
 * ui/        : Streamlit katmanı (girdiler, ayarlar, sayfalar).
-* app.py     : yalnızca orkestrasyon — kenar çubuğu girdileri + 3 sekme.
+* app.py     : yalnızca orkestrasyon — kenar çubuğu girdileri + 4 sekme.
 
-Sekmeler: 📊 Analiz · 🔧 Devre Şeması · ⚙️ Ayarlar
+Sekmeler: 📊 Analiz · 🔧 Devre Şeması · 🧩 Devre Çözücü · ⚙️ Ayarlar
 """
 
 from __future__ import annotations
@@ -22,6 +22,7 @@ from ui.inputs import render_inputs, compute
 from ui.settings import render_settings_page, read_settings
 from ui.analysis_page import render_analysis_page
 from ui.circuit_page import render_circuit_page
+from ui.cascade_page import render_cascade_page
 
 _STYLE = """
 <style>
@@ -53,13 +54,15 @@ def main() -> None:
     if error:
         st.error(f"Giriş hatası: {error}")
 
-    analysis_tab, circuit_tab, settings_tab = st.tabs(
-        ["📊 Analiz", "🔧 Devre Şeması", "⚙️ Ayarlar"]
+    analysis_tab, circuit_tab, cascade_tab, settings_tab = st.tabs(
+        ["📊 Analiz", "🔧 Devre Şeması", "🧩 Devre Çözücü", "⚙️ Ayarlar"]
     )
     with analysis_tab:
         render_analysis_page(output, settings)
     with circuit_tab:
         render_circuit_page(output)
+    with cascade_tab:
+        render_cascade_page(settings)
     with settings_tab:
         render_settings_page()
 

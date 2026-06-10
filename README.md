@@ -2,12 +2,19 @@
 
 > **Microwave Smith Chart Analyzer** — An interactive, professional-grade impedance matching tool built with Python and Streamlit. Designed for microwave engineering students and engineers.
 
-<a href="https://microwave-analyzer-v1-ybv.streamlit.app/">
-  <img src="https://streamlit.io/images/brand/streamlit-logo-primary-colormark-lighttext.png" width="150" alt="Open in Streamlit">
-</a>
+---
 
-Algoritmayı canlı görmek ister misin?
-Yukarıdaki Streamlit logosuna tıkla
+## 🖼️ Ekran Görüntüleri / Screenshots
+
+| 2B Smith Diyagramı | 3B Smith Diyagramı |
+|:---:|:---:|
+| ![2D Smith](docs/screenshot_2d.png) | ![3D Smith](docs/screenshot_3d.png) |
+
+| Devre Şeması | Karşılaştırma Tablosu |
+|:---:|:---:|
+| ![Circuit](docs/screenshot_circuit.png) | ![Table](docs/screenshot_table.png) |
+
+---
 
 ## ✨ Özellikler / Features
 
@@ -50,6 +57,13 @@ Toplam fiziksel uzunluğa göre **en iyiden en kötüye** sıralanmış 8 adet �
 | Uzunluk (d, ℓ) | λ → m → cm → mm → μm |
 | Reaktans / Z | Ω → mΩ |
 
+### 🧩 Devre Çözücü (Kademeli Ağ)
+- Farklı **εr** ve **Z₀** değerlerinde iletim hatları, seri stub ve paralel stub ekleyerek kademeli devre kurma
+- Oluşan devrenin özellikleri (Z_in, Γ, VSWR, geri dönüş kaybı) ve eleman tablosu
+- Smith diyagramı üzerinde **sürekli yörünge** (her düğüm işaretli)
+- Kademeli devre şeması
+- **Gömülü sekme**: giriş empedansı için stub eşleme çözümleri (Devre Şeması sayfasıyla aynı gösterim)
+
 ### ⚙️ Görünüm Ayarları (Ayrı Sekme)
 - Sabit R/X eğrileri, VSWR çemberleri, geri dönüş kaybı halkaları
 - Hat yörüngesi ve uygunlama noktaları gösterim kontrolü
@@ -60,7 +74,7 @@ Toplam fiziksel uzunluğa göre **en iyiden en kötüye** sıralanmış 8 adet �
 ## 🏗️ Mimari / Architecture
 
 ```
-Microwave-Analyzer-V1/
+smith_streamlit/
 ├── core/                   # Saf RF matematiği (dokunulmaz çekirdek)
 │   ├── models.py           # Veri modelleri (LoadData, MatchingSolution …)
 │   ├── rf_math.py          # Γ, VSWR, Z↔Y dönüşümleri
@@ -70,19 +84,23 @@ Microwave-Analyzer-V1/
 │   └── units.py            # Frekans ve uzunluk birim dönüşümleri
 │
 ├── services/
-│   └── analyzer.py         # SmithAnalyzer facade: tek çağrıyla tam analiz
+│   ├── analyzer.py         # SmithAnalyzer facade: tek çağrıyla tam analiz
+│   └── cascade.py          # Kademeli ağ çözücü (saf motor; core'u besteler)
 │
 ├── viz/                    # Saf Plotly figür üreticileri (Streamlit'ten bağımsız)
 │   ├── theme.py            # Tek renk/font kaynağı (dark palette)
 │   ├── smith_2d.py         # İnteraktif 2B Smith diyagramı
 │   ├── smith_3d.py         # Yarım küre 3B Smith diyagramı
-│   └── circuit.py          # Devre şeması (primitif tabanlı tuval)
+│   ├── circuit.py          # Devre şeması (primitif tabanlı tuval)
+│   ├── cascade_smith.py    # Kademeli devre Smith yörüngesi (grid'i paylaşır)
+│   └── cascade_circuit.py  # Kademeli devre şeması (canvas'ı paylaşır)
 │
 ├── ui/                     # Streamlit arayüz katmanı
 │   ├── inputs.py           # Kenar çubuğu giriş formu
 │   ├── settings.py         # ⚙️ ViewSettings + ayar sayfası
 │   ├── analysis_page.py    # 📊 Analiz sekmesi
-│   ├── circuit_page.py     # 🔧 Devre şeması sekmesi
+│   ├── circuit_page.py     # 🔧 Devre şeması sekmesi (+ render_matching_solutions)
+│   ├── cascade_page.py     # 🧩 Devre çözücü sekmesi (+ gömülü eşleme alt-sekmesi)
 │   ├── unit_tools.py       # Birim döngüsü Streamlit düğmeleri
 │   └── format.py           # Sayı biçimlendirme
 │
@@ -116,8 +134,8 @@ Microwave-Analyzer-V1/
 
 ```powershell
 # 1. Projeyi klonla
-git clone https://github.com/B4tuVural/Microwave-Analyzer-V1
-cd Microwave-Analyzer-V1
+git clone https://github.com/KULLANICI_ADI/smith-chart-analyzer.git
+cd smith-chart-analyzer
 
 # 2. Python 3.11 ile sanal ortam oluştur (Windows Python Launcher)
 py -3.11 -m venv rf_venv
@@ -140,8 +158,8 @@ streamlit run app.py
 
 ```bash
 # 1. Projeyi klonla
-git clone https://github.com/B4tuVural/Microwave-Analyzer-V1
-cd Microwave-Analyzer-V1
+git clone https://github.com/KULLANICI_ADI/smith-chart-analyzer.git
+cd smith-chart-analyzer
 
 # 2. Python 3.11 ile sanal ortam oluştur
 python3.11 -m venv rf_venv
@@ -155,6 +173,7 @@ pip install -r requirements.txt
 # 5. Uygulamayı başlat
 streamlit run app.py
 ```
+
 ---
 
 ### Sanal Ortamdan Çıkış
@@ -213,6 +232,13 @@ Hat uzunluğu   : l   = 0.25 λ
 | [NumPy](https://numpy.org) | RF hesaplamaları, vektör işlemleri |
 | Python 3.11 | Tüm çekirdek mantık |
 
+---
+
+## 📜 Lisans / License
+
+Bu proje [MIT Lisansı](LICENSE) kapsamında dağıtılmaktadır.
+
+---
 
 ## 🎓 Notlar / Notes
 

@@ -78,12 +78,13 @@ def _latexify_note(note: str, sol: MatchingSolution, z0: float,
 # ----------------------------------------------------------------------
 # Karşılaştırma tablosu (#5: sütun birimleri tıklamayla değişir)
 # ----------------------------------------------------------------------
-def _summary_table(solutions: list[MatchingSolution], wl: float) -> None:
+def _summary_table(solutions: list[MatchingSolution], wl: float,
+                   key_prefix: str = "circuit") -> None:
     st.caption("Birim değiştirmek için aşağıdaki düğmeye tıklayın "
                "(λ → m → cm → mm → μm). d, ℓ ve Toplam birlikte değişir.")
     bcol, _ = st.columns([1, 3])
     with bcol:
-        u = unit_button("u_tbl", LENGTH_UNITS, "Birim (d, ℓ, Toplam)")
+        u = unit_button(f"{key_prefix}_tbl", LENGTH_UNITS, "Birim (d, ℓ, Toplam)")
 
     rows = []
     for i, s in enumerate(solutions, start=1):
@@ -98,13 +99,18 @@ def _summary_table(solutions: list[MatchingSolution], wl: float) -> None:
 
 
 # ----------------------------------------------------------------------
-# Sayfa
+# Yeniden kullanılabilir eşleme gösterimi (hem ana sayfa hem kademeli alt-sekme)
 # ----------------------------------------------------------------------
-def render_circuit_page(output: AnalyzerOutput | None) -> None:
-    st.subheader("🔧 Uygunlama Devre Şeması")
-
+def render_matching_solutions(output: AnalyzerOutput | None,
+                              key_prefix: str = "circuit",
+                              empty_msg: str | None = None) -> None:
+    """Bir AnalyzerOutput'un uygunlama çözümlerini gösterir: çözüm seçici,
+    birim düğmeleri, metrikler, devre şeması, adım adım çözüm ve karşılaştırma
+    tablosu. `key_prefix` widget anahtarlarını benzersiz kılar; böylece aynı
+    bileşen birden fazla yerde (ör. kademeli devre alt-sekmesi) kullanılabilir.
+    """
     if output is None:
-        st.info("Soldaki **Giriş Değerleri** panelinden bir yük tanımlayın.")
+        st.info(empty_msg or "Önce bir yük tanımlayın.")
         return
 
     wl = output.basic.wavelength_m
@@ -113,30 +119,28 @@ def render_circuit_page(output: AnalyzerOutput | None) -> None:
 
     if not solutions:
         st.warning(
-            "Seçilen yöntem için uygunlama çözümü bulunamadı. Aşağıda yalnızca "
-            "temel iletim hattı gösteriliyor. (Çeyrek dalga transformatör yalnızca "
+            "Uygunlama çözümü bulunamadı. (Çeyrek dalga transformatör yalnızca "
             "saf dirençli yüklerde doğrudan uygulanır.)"
         )
         st.plotly_chart(build_circuit(output, 0), width="stretch",
-                        config=_PLOTLY_CONFIG)
+                        config=_PLOTLY_CONFIG, key=f"{key_prefix}_basic_chart")
         return
 
     labels = [f"Çözüm {i + 1} — {s.method}" for i, s in enumerate(solutions)]
     choice = st.radio("Görüntülenecek çözüm", labels, index=0,
-                      horizontal=True, key="circuit_choice")
+                      horizontal=True, key=f"{key_prefix}_choice")
     index = labels.index(choice)
     sol = solutions[index]
 
-    # Birim kontrolleri (devre şeması + metrikler için)
     cc1, cc2, _ = st.columns([1, 1, 2])
     with cc1:
-        circ_len = unit_button("u_circ_len", LENGTH_UNITS, "Uzunluk (d, ℓ)")
+        circ_len = unit_button(f"{key_prefix}_len", LENGTH_UNITS, "Uzunluk (d, ℓ)")
     with cc2:
-        circ_ohm = unit_button("u_circ_ohm", OHM_UNITS, "Reaktans / Z")
+        circ_ohm = unit_button(f"{key_prefix}_ohm", OHM_UNITS, "Reaktans / Z")
 
     _solution_metrics(sol, wl, z0, circ_len, circ_ohm)
     st.plotly_chart(build_circuit(output, index, circ_len, circ_ohm),
-                    width="stretch", config=_PLOTLY_CONFIG)
+                    width="stretch", config=_PLOTLY_CONFIG, key=f"{key_prefix}_chart")
 
     if sol.notes:
         st.markdown("#### 🧮 Adım Adım Çözüm")
@@ -148,4 +152,15 @@ def render_circuit_page(output: AnalyzerOutput | None) -> None:
     st.caption("En iyiden en kötüye sıralı (#1 = en kısa toplam fiziksel "
                "uzunluk d + ℓ, genelde tercih edilen). '#' sırası yukarıdaki "
                "'Çözüm N' seçicisiyle aynıdır.")
-    _summary_table(solutions, wl)
+    _summary_table(solutions, wl, key_prefix=key_prefix)
+
+
+# ----------------------------------------------------------------------
+# Sayfa
+# ----------------------------------------------------------------------
+def render_circuit_page(output: AnalyzerOutput | None) -> None:
+    st.subheader("🔧 Uygunlama Devre Şeması")
+    render_matching_solutions(
+        output, key_prefix="circuit",
+        empty_msg="Soldaki **Giriş Değerleri** panelinden bir yük tanımlayın.",
+    )

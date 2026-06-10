@@ -141,16 +141,29 @@ def _add_smith_curves(fig: go.Figure, settings) -> None:
             ))
 
     if settings.show_vswr_3d:
+        first = True
         for vswr in default_vswr_values(settings.curve_detail_3d):
             radius = (vswr - 1) / (vswr + 1)
             x, y, z = _hemisphere_xyz(gamma_circle(radius, n=800))
             if len(x) < 2:
                 continue
+            rl = -20 * np.log10(radius) if radius > 0 else np.inf
+            rl_txt = "∞" if not np.isfinite(rl) else f"{rl:.1f} dB"
+            hover = (
+                f"<b>VSWR = {vswr:.2f}</b><br>"
+                f"|Γ| = {radius:.4f}<br>"
+                f"Geri dönüş kaybı = {rl_txt}"
+                f"<extra></extra>"
+            )
             fig.add_trace(go.Scatter3d(
                 x=x, y=y, z=z, mode="lines",
-                line=dict(color=PALETTE.vswr, width=1.4),
-                opacity=0.6, hoverinfo="skip", showlegend=False,
+                line=dict(color=PALETTE.vswr, width=1.8),
+                opacity=0.65,
+                name="VSWR çemberleri", legendgroup="vswr3d",
+                showlegend=first,
+                hovertemplate=hover,
             ))
+            first = False
 
 
 def _marker3d(fig, gamma, *, color, name, size, z0):

@@ -100,13 +100,22 @@ def _add_helper_circles(fig: go.Figure, settings) -> None:
         first = True
         for vswr in default_vswr_values(settings.curve_detail_2d):
             radius = (vswr - 1) / (vswr + 1)
+            rl = -20 * np.log10(radius) if radius > 0 else np.inf
+            rl_txt = "∞" if not np.isfinite(rl) else f"{rl:.1f} dB"
+            hover = (
+                f"<b>VSWR = {vswr:.2f}</b><br>"
+                f"|Γ| = {radius:.4f}<br>"
+                f"Geri dönüş kaybı = {rl_txt}"
+                f"<extra></extra>"
+            )
             t = go.Scatter(
                 x=radius * np.cos(np.linspace(0, 2 * np.pi, 400)),
                 y=radius * np.sin(np.linspace(0, 2 * np.pi, 400)),
-                mode="lines", line=dict(color=PALETTE.vswr, width=0.8, dash="dash"),
-                opacity=0.6, hoverinfo="skip",
+                mode="lines", line=dict(color=PALETTE.vswr, width=1.0, dash="dash"),
+                opacity=0.65,
                 name="VSWR çemberleri", legendgroup="vswr",
                 showlegend=first,
+                hovertemplate=hover,
             )
             fig.add_trace(t)
             first = False
@@ -115,13 +124,21 @@ def _add_helper_circles(fig: go.Figure, settings) -> None:
         first = True
         for rl in [3, 6, 10, 15, 20, 30]:
             radius = 10 ** (-rl / 20)
+            vswr_val = (1 + radius) / (1 - radius)
+            hover = (
+                f"<b>Geri dönüş kaybı = {rl:.0f} dB</b><br>"
+                f"|Γ| = {radius:.4f}<br>"
+                f"VSWR = {vswr_val:.2f}"
+                f"<extra></extra>"
+            )
             t = go.Scatter(
                 x=radius * np.cos(np.linspace(0, 2 * np.pi, 400)),
                 y=radius * np.sin(np.linspace(0, 2 * np.pi, 400)),
-                mode="lines", line=dict(color=PALETTE.return_loss, width=0.7, dash="dot"),
-                opacity=0.55, hoverinfo="skip",
+                mode="lines", line=dict(color=PALETTE.return_loss, width=0.9, dash="dot"),
+                opacity=0.6,
                 name="Geri dönüş kaybı", legendgroup="rl",
                 showlegend=first,
+                hovertemplate=hover,
             )
             fig.add_trace(t)
             first = False
@@ -246,15 +263,27 @@ def _add_matching_points(fig: go.Figure, output: AnalyzerOutput, z0: float) -> N
 # ----------------------------------------------------------------------
 # Genel kurucu
 # ----------------------------------------------------------------------
-def build_smith_2d(output: AnalyzerOutput | None, settings) -> go.Figure:
-    """2B Smith diyagramı figürünü kurar."""
-    fig = go.Figure()
+def build_base_smith_2d(settings, title: str | None = None) -> go.Figure:
+    """Yalnızca ızgara + yardımcı çemberler + çerçeve + bölge etiketlerinden
+    oluşan TEMEL Smith figürünü kurar. Hem ana 2B diyagram hem de kademeli
+    devre yörüngesi bunu paylaşır (ızgara kodu tek yerde — anti-spaghetti).
 
+    title verilirse layout uygulanır; verilmezse çağıran kendi layout'unu kurar.
+    """
+    fig = go.Figure()
     _add_grid(fig, settings)
     _add_helper_circles(fig, settings)
     _add_frame(fig)
     if settings.show_labels:
         _add_region_labels(fig, settings)
+    if title is not None:
+        fig.update_layout(**base_2d_layout(title))
+    return fig
+
+
+def build_smith_2d(output: AnalyzerOutput | None, settings) -> go.Figure:
+    """2B Smith diyagramı figürünü kurar."""
+    fig = build_base_smith_2d(settings)
 
     if output is not None:
         z0 = output.basic.z0
