@@ -62,3 +62,26 @@ def stub_reactance_ohm(method: str, required_value: float | None,
             return float("inf")
         return -z0 / required_value
     return required_value * z0
+
+
+# ----------------------------------------------------------------------
+# Kademeli devre uzunluk girişleri: λ veya fiziksel (m/cm/mm)
+# ----------------------------------------------------------------------
+CASCADE_LENGTH_UNITS: tuple[str, ...] = ("λ", "m", "cm", "mm")
+_PHYS_TO_M = {"m": 1.0, "cm": 1e-2, "mm": 1e-3}
+
+
+def to_electrical_lambda(value: float, unit: str, epsilon_r: float,
+                         lambda0_m: float) -> float:
+    """Bir uzunluk girişini ORTAM elektriksel uzunluğuna (λ) çevirir.
+
+    * unit == "λ"  : değer doğrudan elektriksel uzunluktur (εr etkisizdir).
+    * fiziksel (m/cm/mm): ℓ_elek = ℓ_fiz / λ_ortam = ℓ_fiz·√εr / λ0
+    """
+    if unit == "λ":
+        return value
+    if lambda0_m <= 0:
+        return 0.0
+    meters = value * _PHYS_TO_M[unit]
+    lam_med = lambda0_m / (max(epsilon_r, 1e-9) ** 0.5)
+    return meters / lam_med

@@ -76,15 +76,18 @@ class _CircuitCanvas:
             hoverinfo="skip", showlegend=False,
         ))
 
-    def stub_terminal(self, x1, x2, y, kind: str, label_dy: float = -18):
+    def stub_terminal(self, x1, x2, y, kind: str, label_dy: float = -18,
+                      size: int = 10):
         mid = (x1 + x2) / 2
         if "açık" in kind.lower():
             self.wire(x1 - 10, y, x1 + 10, y)
             self.wire(x2 - 10, y, x2 + 10, y)
-            self.label(mid, y + label_dy, "Açık devre uç", color=PALETTE.terminal_open, size=10)
+            self.label(mid, y + label_dy, "Açık devre uç",
+                       color=PALETTE.terminal_open, size=size)
         else:
             self.wire(x1, y, x2, y, width=2.6)
-            self.label(mid, y + label_dy, "Kısa devre uç", color=PALETTE.terminal_short, size=10)
+            self.label(mid, y + label_dy, "Kısa devre uç",
+                       color=PALETTE.terminal_short, size=size)
 
     def dim_h(self, x1, x2, y, label):
         """Yatay ölçü oku (iki yönlü) + etiket."""

@@ -59,9 +59,12 @@ Toplam fiziksel uzunluğa göre **en iyiden en kötüye** sıralanmış 8 adet �
 
 ### 🧩 Devre Çözücü (Kademeli Ağ)
 - Farklı **εr** ve **Z₀** değerlerinde iletim hatları, seri stub ve paralel stub ekleyerek kademeli devre kurma
-- Oluşan devrenin özellikleri (Z_in, Γ, VSWR, geri dönüş kaybı) ve eleman tablosu
+- Yapı doğrudan yükten başlar; aradaki **d / l mesafeleri** iletim hattı elemanlarıyla, stub'lar düğümlere bağlanarak verilir (final sorusundaki kaskat yapı gibi)
+- İletim hatlarına uzunluk, stub'lara **ℓ** boyu + uç tipi (açık/kısa)
+- Uzunluklar **λ / m / cm / mm** cinsinden girilebilir
+- Oluşan devrenin özellikleri (Z_in, Γ, VSWR, geri dönüş kaybı) ve ayrıntılı eleman tablosu
 - Smith diyagramı üzerinde **sürekli yörünge** (her düğüm işaretli)
-- Kademeli devre şeması
+- Kademeli devre şeması (kalın/vurgulu iletim hatları, gerçek seri/paralel stub çizimleri)
 - **Gömülü sekme**: giriş empedansı için stub eşleme çözümleri (Devre Şeması sayfasıyla aynı gösterim)
 
 ### ⚙️ Görünüm Ayarları (Ayrı Sekme)

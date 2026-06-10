@@ -109,8 +109,18 @@ def render_inputs() -> AnalysisRequest:
         freq_unit = fc2.selectbox("Birim", ["Hz", "kHz", "MHz", "GHz"], index=2,
                                   key="in_funit", label_visibility="collapsed")
 
-        vf = st.number_input("Faz hızı oranı v/c", value=0.6667,
-                             min_value=0.0001, max_value=1.0, step=0.01, key="in_vf")
+        # Faz hızı tanımı: v/c oranı VEYA dielektrik εr (geçiş)
+        vf_mode = st.radio("Faz hızı tanımı", ["v/c oranı", "Dielektrik εr"],
+                           horizontal=True, key="in_vfmode")
+        if vf_mode == "Dielektrik εr":
+            eps_r = st.number_input("Dielektrik sabiti εr", value=2.25,
+                                    min_value=1.0, step=0.05, key="in_epsr")
+            vf = 1.0 / (eps_r ** 0.5)
+            st.caption(f"v/c = 1/√εr = **{vf:.4f}**")
+        else:
+            vf = st.number_input("Faz hızı oranı v/c", value=0.6667,
+                                 min_value=0.0001, max_value=1.0, step=0.01,
+                                 key="in_vf")
 
         st.markdown("**Hat uzunluğu (m)**")
         lc1, lc2 = st.columns([2, 1])
